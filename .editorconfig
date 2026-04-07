@@ -1,0 +1,18 @@
+root = true
+
+[*.cs]
+
+#### NAMING STYLE ####
+
+# 1. Определяем сам стиль (нижнее подчеркивание + camelCase)
+dotnet_naming_style.private_field_style.capitalization = camel_case
+dotnet_naming_style.private_field_style.required_prefix = _
+
+# 2. Определяем, к чему это применить (приватные поля)
+dotnet_naming_symbols.private_fields_symbol.applicable_kinds = field
+dotnet_naming_symbols.private_fields_symbol.applicable_accessibilities = private
+
+# 3. Соединяем символ и стиль в правило
+dotnet_naming_rule.private_fields_must_have_underscore.symbols = private_fields_symbol
+dotnet_naming_rule.private_fields_must_have_underscore.style = private_field_style
+dotnet_naming_rule.private_fields_must_have_underscore.severity = suggestion
