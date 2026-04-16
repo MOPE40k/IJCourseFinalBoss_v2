@@ -90,8 +90,9 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature
         {
             _inProcess = false;
 
-            foreach (EnemyItemConfig enemyItemConfig in _config.EnemyItems)
-                _walletService.Add(CurrencyTypes.Gold, _config.RewardPerEnemy);
+            int reward = _config.EnemyItems.Count * _config.RewardPerEnemy;
+
+            _walletService.Add(CurrencyTypes.Gold, reward);
 
             _completed.Invoke();
         }

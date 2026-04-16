@@ -12,4 +12,14 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Attack.AreaAttack
     {
         public ReactiveVariable<float> Value = null;
     }
+
+    public class AirStrikeAttackRequest : IEntityComponent
+    {
+        public ReactiveEvent Value = null;
+    }
+
+    public class MiningRequest : IEntityComponent
+    {
+        public ReactiveEvent Value = null;
+    }
 }

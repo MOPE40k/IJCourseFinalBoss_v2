@@ -2,8 +2,6 @@
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Develop.Runtime.Gameplay.Features.ApplyDamage;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Attack;
-using Assets._Project.Develop.Runtime.Gameplay.Features.Attack.AreaAttack;
-using Assets._Project.Develop.Runtime.Gameplay.Features.Attack.Shoot;
 using Assets._Project.Develop.Runtime.Gameplay.Features.ContactTakeDamage;
 using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle;
@@ -14,7 +12,7 @@ using Assets._Project.Develop.Runtime.Infrastructure.DI;
 using Assets._Project.Develop.Runtime.Utilities;
 using Assets._Project.Develop.Runtime.Utilities.Conditions;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
-using CourseGameVideo.Assets._Project.Develop.Runtime.Gameplay.Features.Control;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Control;
 using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
@@ -22,9 +20,10 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
     public class EntitiesFactory
     {
         // Consts
-        private const string MainHeroPrefabPath = "Entities/Tower";
+        private const string MainHeroPrefabPath = "Entities/Hero";
         private const string GhostPrefabPath = "Entities/Ghost";
         private const string ProjectilePrefabPath = "Entities/Projectile";
+        private const string AirStrikeBombPrefabPath = "Entities/AirStrikeBomb";
         private const string MinePrefabPath = "Entities/Mine";
         private const string ContactTriggerPrefabPath = "Entities/ContactTrigger";
 
@@ -114,7 +113,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddSystem(new AttackProcessTimerSystem())
                 .AddSystem(new AttackDelayEndTriggerSystem())
                 .AddSystem(new MousePositionOnPlaneSystem(_inputService))
-                // .AddSystem(new AreaDamageSystem(this))
                 .AddSystem(new EndAttackSystem())
                 .AddSystem(new AttackCooldownTimerSystem())
                 .AddSystem(new ApplyDamageSystem())
@@ -249,19 +247,15 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
 
             return entity;
         }
-        public Entity CreateAirStrike(Vector3 position, float radius, float damage, Entity owner)
+
+        public Entity CreateAreaDamageEntity()
         {
             Entity entity = CreateEmpty();
 
-            _monoEntitiesFactory.Create(entity, position, ProjectilePrefabPath);
-
             entity
-                .AddRadiusAreaAttack(new ReactiveVariable<float>(radius))
-                .AddDamageAreaAttack(new ReactiveVariable<float>(damage))
                 .AddContactsDetectingMask(Layers.CharactersMask)
                 .AddContactCollidersBuffer(new Buffer<Collider>(64))
                 .AddContactEntitiesBuffer(new Buffer<Entity>(64))
-                .AddTeam(new ReactiveVariable<Teams>(owner.Team.Value))
                 .AddIsTouchAnotherTeam()
                 .AddIsDead();
 
@@ -276,57 +270,14 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 .AddMustSelfRelease(mustSelfRelease);
 
             entity
-                .AddSystem(new AreaContactsDetectingSystem())
-                .AddSystem(new AreaContactsEntitiesFilterSystem(_collidersRegistryService))
-                .AddSystem(new AreaDealDamageOnContactAndSelfReleaseSystem())
                 .AddSystem(new AnotherTeamTouchDetectorSystem())
                 .AddSystem(new DeathSystem())
                 .AddSystem(new DisableCollidersOnDeathSystem())
                 .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));
 
-            _entitiesLifeContext.Add(entity);
-
             return entity;
         }
 
-        public Entity CreateMine(Vector3 position, float radius, float damage, Entity owner)
-        {
-            Entity entity = CreateEmpty();
-
-            _monoEntitiesFactory.Create(entity, position, MinePrefabPath);
-
-            entity
-                .AddIsDead()
-                .AddContactsDetectingMask(Layers.CharactersMask)
-                .AddContactCollidersBuffer(new Buffer<Collider>(64))
-                .AddContactEntitiesBuffer(new Buffer<Entity>(64))
-                .AddBodyContactDamage(new ReactiveVariable<float>(damage))
-                .AddIsTouchAnotherTeam()
-                .AddTeam(new ReactiveVariable<Teams>(owner.Team.Value));
-
-            ICompositeCondition mustDie = new CompositeCondition()
-                .Add(new FuncCondition(() => entity.IsTouchAnotherTeam.Value));
-
-            ICompositeCondition mustSelfRelease = new CompositeCondition()
-                .Add(new FuncCondition(() => entity.IsDead.Value));
-
-            entity
-                .AddMustDie(mustDie)
-                .AddMustSelfRelease(mustSelfRelease);
-
-            entity
-                .AddSystem(new BodyContactsDetectingSystem(radius))
-                .AddSystem(new BodyContactsEntitiesFilterSystem(_collidersRegistryService))
-                .AddSystem(new DealDamageOnContactSystem())
-                .AddSystem(new AnotherTeamTouchDetectorSystem())
-                .AddSystem(new DeathSystem())
-                .AddSystem(new DisableCollidersOnDeathSystem())
-                .AddSystem(new SelfReleaseSystem(_entitiesLifeContext));
-
-            _entitiesLifeContext.Add(entity);
-
-            return entity;
-        }
 
         public Entity CreateContactTrigger(Vector3 position)
         {

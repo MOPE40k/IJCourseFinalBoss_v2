@@ -5,7 +5,7 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.StagesFeature;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using Assets._Project.Develop.Runtime.Utilities.StateMachineCore;
 using Assets._Project.Develop.Runtime.Utilities.Timer;
-using CourseGameVideo.Assets._Project.Develop.Runtime.Gameplay.Features.AbilityFeatures;
+using Assets._Project.Develop.Runtime.Gameplay.Features.AbilityFeatures;
 using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.States
