@@ -5,20 +5,16 @@ using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI.States
 {
-    public partial class MovementToTargetState : State, IUpdatableState
+    public class MovementToTargetState : State, IUpdatableState
     {
         // References
-        private readonly ITargetProvider _targetProvider = null;
         private readonly Transform _transform = null;
         private readonly ReactiveVariable<Entity> _currentTarget = null;
         private readonly ReactiveVariable<Vector3> _movementDirection = null;
         private readonly ReactiveVariable<Vector3> _rotationDirection = null;
 
-        public MovementToTargetState(Entity entity, ITargetProvider targetProvider)
+        public MovementToTargetState(Entity entity)
         {
-            entity.AddCurrentTarget();
-
-            _targetProvider = targetProvider;
             _transform = entity.Transform;
             _currentTarget = entity.CurrentTarget;
             _movementDirection = entity.MoveDirection;
@@ -27,13 +23,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI.States
 
         public void Update(float deltaTime)
         {
-            if (_targetProvider.TryGetTarget(out Entity target) == false)
-                return;
-
-            _currentTarget.Value = target;
-
-            Vector3 directionToTarget
-                = (_currentTarget.Value.Transform.position - _transform.position).normalized;
+            Vector3 directionToTarget = CalculateDirectionToTarget();
 
             _movementDirection.Value = directionToTarget;
             _rotationDirection.Value = directionToTarget;
@@ -45,5 +35,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI.States
 
             _movementDirection.Value = Vector3.zero;
         }
+
+        private Vector3 CalculateDirectionToTarget()
+            => (_currentTarget.Value.Transform.position - _transform.position).normalized;
     }
 }

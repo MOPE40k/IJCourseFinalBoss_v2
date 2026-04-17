@@ -62,9 +62,38 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI
             return brain;
         }
 
-        public StateMachineBrain CreateGhostBrain(Entity entity)
+        public StateMachineBrain CreateGhostBrain(Entity entity, ITargetSelector targetSelector)
         {
-            AIStateMachine stateMachine = CreateMovementToTargetStateMachine(entity);
+            AIStateMachine movementToTargetState = CreateMovementToTargetStateMachine(entity, targetSelector);
+            AttackTriggerState attackState = new AttackTriggerState(entity);
+
+            ICompositeCondition fromMovementToAttackCondition = new CompositeCondition()
+                .Add(new FuncCondition(() =>
+                {
+                    IReadOnlyVariable<Entity> currentTarget = entity.CurrentTarget;
+
+                    if (currentTarget.Value is null)
+                        return false;
+
+                    Vector3 position = entity.Transform.position;
+                    Vector3 targetPosition = currentTarget.Value.Transform.position;
+
+                    float radiusAttack = entity.RadiusAreaAttack.Value;
+
+                    return Vector3.Distance(position, targetPosition) <= radiusAttack;
+                }));
+
+            ICompositeCondition fromAttackToMovementCondition = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsDead.Value == false));
+
+            AIStateMachine stateMachine = new AIStateMachine();
+
+            stateMachine
+                .AddState(movementToTargetState)
+                .AddState(attackState)
+                .AddTransition(movementToTargetState, attackState, fromMovementToAttackCondition)
+                .AddTransition(attackState, movementToTargetState, fromAttackToMovementCondition);
+
             StateMachineBrain brain = new StateMachineBrain(stateMachine);
 
             _brainsContext.SetFor(entity, brain);
@@ -102,36 +131,26 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI
             return stateMachine;
         }
 
-        private AIStateMachine CreateMovementToTargetStateMachine(Entity entity)
+        private AIStateMachine CreateMovementToTargetStateMachine(Entity entity, ITargetSelector targetSelector)
         {
-            ITargetProvider mainHeroTargetProvider = new MainHeroTargetProvider(
-                _container.Resolve<MainHeroHolderService>());
+            FindTargetState findTargetState = new FindTargetState(targetSelector, _entitiesLifeContext, entity);
+            MovementToTargetState movementState = new MovementToTargetState(entity);
 
-            MovementToTargetState movementToTargetState = new MovementToTargetState(
-                entity,
-                mainHeroTargetProvider);
+            IReadOnlyVariable<Entity> currentTarget = entity.CurrentTarget;
 
-            SelfDestroyState selfDestroyState = new SelfDestroyState(entity);
+            ICompositeCondition fromFindTargetToMovementCondition = new CompositeCondition()
+                .Add(new FuncCondition(() => currentTarget.Value is not null));
 
-            ICompositeCondition fromMovementToSelfDestroyCondition = new CompositeCondition()
-                .Add(new FuncCondition(() =>
-                {
-                    if (entity.CurrentTarget.Value is null)
-                        return false;
-
-                    float distanceToTarget = Vector3.Distance(
-                        entity.CurrentTarget.Value.Transform.position,
-                        entity.Transform.position);
-
-                    return distanceToTarget <= entity.RadiusAreaAttack.Value;
-                }));
+            ICompositeCondition fromMovementToFindTarget = new CompositeCondition()
+                .Add(new FuncCondition(() => currentTarget.Value is null));
 
             AIStateMachine stateMachine = new AIStateMachine();
 
-            stateMachine.AddState(movementToTargetState);
-            stateMachine.AddState(selfDestroyState);
-
-            stateMachine.AddTransition(movementToTargetState, selfDestroyState, fromMovementToSelfDestroyCondition);
+            stateMachine
+                .AddState(findTargetState)
+                .AddState(movementState)
+                .AddTransition(findTargetState, movementState, fromFindTargetToMovementCondition)
+                .AddTransition(movementState, findTargetState, fromMovementToFindTarget);
 
             return stateMachine;
         }

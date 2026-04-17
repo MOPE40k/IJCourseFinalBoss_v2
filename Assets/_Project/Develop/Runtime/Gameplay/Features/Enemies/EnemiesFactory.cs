@@ -1,6 +1,8 @@
 ﻿using Assets._Project.Develop.Runtime.Configs.Gameplay.Entities;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.Features.AI;
+using Assets._Project.Develop.Runtime.Gameplay.Features.AI.States;
+using Assets._Project.Develop.Runtime.Gameplay.Features.Attack;
 using Assets._Project.Develop.Runtime.Gameplay.Features.TeamsFeature;
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
@@ -34,7 +36,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Enemies
                 case GhostConfig ghostConfig:
                     entity = _entitiesFactory.CreateGhost(position, ghostConfig);
 
-                    _brainsFactory.CreateGhostBrain(entity);
+                    _brainsFactory.CreateGhostBrain(entity, new MainHeroTargetSelector());
 
                     break;
 
@@ -44,6 +46,9 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Enemies
 
             entity
                 .AddTeam(new ReactiveVariable<Teams>(Teams.Enemies));
+
+            entity
+                .AddSystem(new SelfDestroySystem());
 
             _entitiesLifeContext.Add(entity);
 
