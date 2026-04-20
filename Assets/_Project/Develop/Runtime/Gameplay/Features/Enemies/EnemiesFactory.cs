@@ -29,20 +29,11 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Enemies
 
         public Entity Create(Vector3 position, EntityConfig config)
         {
-            Entity entity;
-
-            switch (config)
+            Entity entity = config switch
             {
-                case GhostConfig ghostConfig:
-                    entity = _entitiesFactory.CreateGhost(position, ghostConfig);
-
-                    _brainsFactory.CreateGhostBrain(entity, new MainHeroTargetSelector());
-
-                    break;
-
-                default:
-                    throw new ArgumentException($"Not support {config.GetType()} type config");
-            }
+                GhostConfig ghostConfig => CreateGhostEnemy(position, ghostConfig),
+                _ => throw new ArgumentException($"Not support {config.GetType()} type config")
+            };
 
             entity
                 .AddTeam(new ReactiveVariable<Teams>(Teams.Enemies));
@@ -51,6 +42,15 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Enemies
                 .AddSystem(new SelfDestroySystem());
 
             _entitiesLifeContext.Add(entity);
+
+            return entity;
+        }
+
+        private Entity CreateGhostEnemy(Vector3 position, GhostConfig config)
+        {
+            Entity entity = _entitiesFactory.CreateGhost(position, config);
+
+            _brainsFactory.CreateGhostBrain(entity, new MainHeroTargetSelector());
 
             return entity;
         }

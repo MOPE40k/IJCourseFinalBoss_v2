@@ -1,9 +1,8 @@
-﻿using Assets._Project.Develop.Runtime.Configs.Gameplay.Levels;
-using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
+﻿using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
 using Assets._Project.Develop.Runtime.Gameplay.Infrastructure;
 using Assets._Project.Develop.Runtime.Meta.Features.LevelsProgression;
 using Assets._Project.Develop.Runtime.Meta.Features.Sessions;
-using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
+using Assets._Project.Develop.Runtime.UI.Gameplay;
 using Assets._Project.Develop.Runtime.Utilities.CoroutinesManagment;
 using Assets._Project.Develop.Runtime.Utilities.DataManagment.DataProviders;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagment;
@@ -20,6 +19,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
         private readonly ICoroutinesPerformer _coroutinesPerformer = null;
         private readonly SessionsResultsCounterService _sessionsResultsCounterService = null;
         private readonly SceneSwitcherService _sceneSwitcherService = null;
+        private readonly GameplayPopupService _gameplayPopupService = null;
 
         public WinState(
             IInputService inputService,
@@ -28,7 +28,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             PlayerDataProvider playerDataProvider,
             ICoroutinesPerformer coroutinesPerformer,
             SessionsResultsCounterService sessionsResultsCounterService,
-            SceneSwitcherService sceneSwitcherService) : base(inputService)
+            SceneSwitcherService sceneSwitcherService,
+            GameplayPopupService gameplayPopupService) : base(inputService)
         {
             _levelsProgressionService = levelsProgressionService;
             _gameplayInputArgs = gameplayInputArgs;
@@ -36,6 +37,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
             _coroutinesPerformer = coroutinesPerformer;
             _sessionsResultsCounterService = sessionsResultsCounterService;
             _sceneSwitcherService = sceneSwitcherService;
+            _gameplayPopupService = gameplayPopupService;
         }
 
         public override void Enter()
@@ -50,7 +52,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
 
             _coroutinesPerformer.StartPerform(_playerDataProvider.SaveAsync());
 
-            _coroutinesPerformer.StartPerform(_sceneSwitcherService.ProcessSwitchTo(Scenes.MainMenu));
+            // _coroutinesPerformer.StartPerform(_sceneSwitcherService.ProcessSwitchTo(Scenes.MainMenu));
+            _gameplayPopupService.OpenWinPopup();
         }
 
         public void Update(float deltaTime)

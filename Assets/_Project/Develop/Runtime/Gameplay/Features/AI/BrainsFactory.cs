@@ -193,5 +193,70 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AI
 
             return stateMachine;
         }
+
+        private AIStateMachine CreateAirStrikeAttackStateMachine(Entity entity)
+        {
+            IInputService inputService = _container.Resolve<IInputService>();
+
+            PlayerMouseInputRotationState rotateToMousePointerState
+                = new PlayerMouseInputRotationState(entity);
+
+            AttackTriggerState attackTriggerState = new AttackTriggerState(entity);
+
+            ICondition canAttack = entity.CanStartAttack;
+
+            ICompositeCondition fromRotateToAttackCondition = new CompositeCondition()
+                .Add(canAttack)
+                .Add(new FuncCondition(() => inputService.IsFire));
+
+            ReactiveVariable<bool> inAttackProcess = entity.InAttackProcess;
+
+            ICompositeCondition fromAttackToRotateStateCondition = new CompositeCondition()
+                .Add(new FuncCondition(() => inAttackProcess.Value == false));
+
+            AIStateMachine stateMachine = new AIStateMachine();
+
+            stateMachine
+                .AddState(rotateToMousePointerState)
+                .AddState(attackTriggerState)
+                .AddTransition(rotateToMousePointerState, attackTriggerState, fromRotateToAttackCondition)
+                .AddTransition(attackTriggerState, rotateToMousePointerState, fromAttackToRotateStateCondition);
+
+            return stateMachine;
+        }
+
+        private AIStateMachine CreateMiningStateMachine(Entity entity)
+        {
+            IInputService inputService = _container.Resolve<IInputService>();
+
+            PlayerMouseInputRotationState rotateToMousePointerState
+                = new PlayerMouseInputRotationState(entity);
+
+            AttackTriggerState mouseAttackTriggerState
+                = new AttackTriggerState(
+                    entity);
+
+            ICondition canAttack = entity.CanStartAttack;
+
+            ICompositeCondition fromRotateToAttackCondition = new CompositeCondition()
+                .Add(new FuncCondition(() => inputService.IsFire))
+                .Add(canAttack);
+
+            ReactiveVariable<bool> inAttackProcess = entity.InAttackProcess;
+
+            ICompositeCondition fromAttackToRotateStateCondition = new CompositeCondition()
+                .Add(new FuncCondition(() => inAttackProcess.Value == false))
+                .Add(new FuncCondition(() => inputService.IsFire == false));
+
+            AIStateMachine stateMachine = new AIStateMachine();
+
+            stateMachine
+                .AddState(rotateToMousePointerState)
+                .AddState(mouseAttackTriggerState)
+                .AddTransition(rotateToMousePointerState, mouseAttackTriggerState, fromRotateToAttackCondition)
+                .AddTransition(mouseAttackTriggerState, rotateToMousePointerState, fromAttackToRotateStateCondition);
+
+            return stateMachine;
+        }
     }
 }

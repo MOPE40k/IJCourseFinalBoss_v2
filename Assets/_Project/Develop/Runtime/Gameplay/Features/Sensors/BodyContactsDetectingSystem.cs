@@ -7,16 +7,10 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Sensors
 {
     public class BodyContactsDetectingSystem : IInitializableSystem, IUpdatableSystem
     {
-        private readonly float _radiusDetecting = 0f;
         private Buffer<Collider> _contacts;
         private LayerMask _mask;
 
         private CapsuleCollider _body;
-
-        public BodyContactsDetectingSystem(float radius)
-        {
-            _radiusDetecting = radius;
-        }
 
         public void OnInit(Entity entity)
         {
@@ -31,8 +25,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.Sensors
             _contacts.Count = Physics.OverlapCapsuleNonAlloc(
                 _body.bounds.min,
                 _body.bounds.max,
-                _radiusDetecting,
-                // _body.radius,
+                _body.radius,
                 _contacts.Items,
                 _mask,
                 QueryTriggerInteraction.Ignore);

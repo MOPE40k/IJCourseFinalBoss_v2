@@ -15,10 +15,11 @@ MonoBehaviour:
   _prefabPath: Entities/Hero
   _moveSpeed: 9
   _rotationSpeed: 900
-  _attackProcessTime: 1
+  _attackProcessTime: 0.5
   _attackDelayTime: 0.5
   _attackCooldown: 0.5
   _radiusAreaAttack: 5
+  _costPerMine: 100
   _instantAttackDamage: 50
   _damageToArea: 25
   _maxHealth: 100

@@ -16,5 +16,6 @@ MonoBehaviour:
   - _enemyConfig: {fileID: 11400000, guid: 0415f544875afe7489a6c023c0e3cad4, type: 2}
   - _enemyConfig: {fileID: 11400000, guid: 0415f544875afe7489a6c023c0e3cad4, type: 2}
   - _enemyConfig: {fileID: 11400000, guid: 0415f544875afe7489a6c023c0e3cad4, type: 2}
-  _minRadius: 15
-  _maxRadius: 30
+  _minRadius: 6.75
+  _maxRadius: 6.75
+  _rewardPerEnemy: 50

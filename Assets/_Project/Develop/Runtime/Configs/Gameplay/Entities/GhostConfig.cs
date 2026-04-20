@@ -5,16 +5,47 @@ namespace Assets._Project.Develop.Runtime.Configs.Gameplay.Entities
     [CreateAssetMenu(menuName = "Configs/Gameplay/Entities/NewGhostConfig", fileName = "GhostConfig")]
     public class GhostConfig : EntityConfig
     {
-        [field: SerializeField] public string PrefabPath { get; private set; } = "Entities/Ghost";
-        [field: SerializeField, Min(0)] public float MoveSpeed { get; private set; } = 9f;
-        [field: SerializeField, Min(0)] public float RotationSpeed { get; private set; } = 900f;
-        [field: SerializeField, Min(0)] public float MaxHealth { get; private set; } = 100f;
-        [field: SerializeField, Min(0)] public float AttackProcessTime { get; private set; } = 1f;
-        [field: SerializeField, Min(0)] public float AttackDelayTime { get; private set; } = 0.5f;
-        [field: SerializeField, Min(0)] public float AttackCooldown { get; private set; } = 0.5f;
-        [field: SerializeField, Min(0)] public float BodyContactDamage { get; private set; } = 50f;
-        [field: SerializeField, Min(0)] public float DamageAreaAttack { get; private set; } = 15f;
-        [field: SerializeField, Min(0)] public float RadiusAreaAttack { get; private set; } = 5f;
-        [field: SerializeField, Min(0)] public float DeathProcessTime { get; private set; } = 2f;
+        [Header("Prefab Settings:")]
+        [SerializeField] public string _prefabPath = "Entities/Ghost";
+
+        [Space]
+        [Header("Moving Settings:")]
+        [SerializeField, Min(0)] public float _moveSpeed = 9f;
+        [SerializeField, Min(0)] public float _rotationSpeed = 900f;
+
+        [Space]
+        [Header("Attack Settings:")]
+        [SerializeField, Min(0)] public float _attackProcessTime = 1f;
+        [SerializeField, Min(0)] public float _attackDelayTime = 0.5f;
+        [SerializeField, Min(0)] public float _attackCooldown = 0.5f;
+
+        [Space]
+        [Header("Damage Settings:")]
+        [SerializeField, Min(0)] public float _bodyContactDamage = 50f;
+        [SerializeField, Min(0)] public float _damageAreaAttack = 15f;
+        [SerializeField, Min(0)] public float _radiusAreaAttack = 5f;
+
+        [Space]
+        [Header("Lifecycle Settings:")]
+        [SerializeField, Min(0)] public float _maxHealth = 100f;
+        [SerializeField, Min(0)] public float _deathProcessTime = 2f;
+
+        [Space]
+        [Header("Spawn Settings:")]
+        [SerializeField] private float _spawnProcessTime = 2f;
+
+        // Runtime
+        public string PrefabPath => _prefabPath;
+        public float MoveSpeed => _moveSpeed;
+        public float RotationSpeed => _rotationSpeed;
+        public float AttackProcessTime => _attackProcessTime;
+        public float AttackDelayTime => _attackDelayTime;
+        public float AttackCooldown => _attackCooldown;
+        public float BodyContactDamage => _bodyContactDamage;
+        public float DamageAreaAttack => _damageAreaAttack;
+        public float RadiusAreaAttack => _radiusAreaAttack;
+        public float MaxHealth => _maxHealth;
+        public float DeathProcessTime => _deathProcessTime;
+        public float SpawnProcessTime => _spawnProcessTime;
     }
 }

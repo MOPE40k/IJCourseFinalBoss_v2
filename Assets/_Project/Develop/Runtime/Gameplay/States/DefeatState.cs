@@ -1,5 +1,6 @@
 ﻿using Assets._Project.Develop.Runtime.Gameplay.Features.InputFeature;
 using Assets._Project.Develop.Runtime.Meta.Features.Sessions;
+using Assets._Project.Develop.Runtime.UI.Gameplay;
 using Assets._Project.Develop.Runtime.Utilities.CoroutinesManagment;
 using Assets._Project.Develop.Runtime.Utilities.DataManagment.DataProviders;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagment;
@@ -11,22 +12,22 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
     public class DefeatState : EndGameState, IUpdatableState
     {
         // References
-        private readonly SceneSwitcherService _sceneSwitcherService = null;
         private readonly PlayerDataProvider _playerDataProvider = null;
         private readonly ICoroutinesPerformer _coroutinesPerformer = null;
         private readonly SessionsResultsCounterService _sessionsResultsCounterService = null;
+        private readonly GameplayPopupService _gameplayPopupService = null;
 
         public DefeatState(
-            SceneSwitcherService sceneSwitcherService,
             PlayerDataProvider playerDataProvider,
             ICoroutinesPerformer coroutinesPerformer,
             SessionsResultsCounterService sessionsResultsCounterService,
-            IInputService inputService) : base(inputService)
+            IInputService inputService,
+            GameplayPopupService gameplayPopupService) : base(inputService)
         {
-            _sceneSwitcherService = sceneSwitcherService;
             _playerDataProvider = playerDataProvider;
             _coroutinesPerformer = coroutinesPerformer;
             _sessionsResultsCounterService = sessionsResultsCounterService;
+            _gameplayPopupService = gameplayPopupService;
         }
 
         public override void Enter()
@@ -39,7 +40,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
 
             _coroutinesPerformer.StartPerform(_playerDataProvider.SaveAsync());
 
-            _coroutinesPerformer.StartPerform(_sceneSwitcherService.ProcessSwitchTo(Scenes.MainMenu));
+            // _coroutinesPerformer.StartPerform(_sceneSwitcherService.ProcessSwitchTo(Scenes.MainMenu));
+            _gameplayPopupService.OpenDefeatPopup();
         }
 
         public void Update(float deltaTime)

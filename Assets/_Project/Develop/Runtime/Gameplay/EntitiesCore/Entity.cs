@@ -1,12 +1,15 @@
 ﻿using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Systems;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
 {
     public partial class Entity : IDisposable
     {
+        // Delegates
+        public event Action<Entity> Initialized = null;
+
+        // Runtime
         private readonly Dictionary<Type, IEntityComponent> _components = new();
 
         private readonly List<IEntitySystem> _systems = new();
@@ -26,6 +29,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore
                 initializable.OnInit(this);
 
             _isInit = true;
+
+            Initialized?.Invoke(this);
         }
 
         public void OnUpdate(float deltaTime)

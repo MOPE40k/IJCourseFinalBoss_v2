@@ -32,7 +32,7 @@ namespace Assets._Project.Develop.Runtime.UI.SessionsResults
         {
             foreach (SessionEndConditionTypes conditionType in _sessionsResultsCounterService.AvailableSessionEndConditions)
             {
-                IconTextView resultView = _viewsFactory.Create<IconTextView>(ViewIDs.ResultView);
+                IconTextView resultView = _viewsFactory.Create<IconTextView>(ViewIDs.IconTextView);
 
                 _view.Add(resultView);
 

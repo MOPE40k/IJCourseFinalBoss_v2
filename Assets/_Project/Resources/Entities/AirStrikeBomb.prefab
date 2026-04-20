@@ -1,6 +1,84 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &8509173104132567971
+--- !u!1 &1196566238194154785
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6070943154742092584}
+  - component: {fileID: 7820423565468794090}
+  m_Layer: 0
+  m_Name: View
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6070943154742092584
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1196566238194154785}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7034463701662176888}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7820423565468794090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1196566238194154785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 741579ffdf8874cfe9d29701a77555b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _deadEffectPrefab: {fileID: 6231179254812234501, guid: 9769217d989b43643952a8ea313d42af,
+    type: 3}
+  _effectSpawnPoint: {fileID: 1050359893912244569}
+--- !u!1 &7694161955699364796
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1050359893912244569}
+  m_Layer: 7
+  m_Name: EffectSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1050359893912244569
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7694161955699364796}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4428919595972182067}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &5852520093906864290
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -11,7 +89,7 @@ PrefabInstance:
     - target: {fileID: 2741506409440250557, guid: a9659b5b2e06e2c4881cec3203de9b06,
         type: 3}
       propertyPath: m_Name
-      value: Projectile
+      value: AirStrikeBomb
       objectReference: {fileID: 0}
     - target: {fileID: 7804451097117444241, guid: a9659b5b2e06e2c4881cec3203de9b06,
         type: 3}
@@ -64,7 +142,28 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2133046513300929291, guid: a9659b5b2e06e2c4881cec3203de9b06, type: 3}
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7804451097117444241, guid: a9659b5b2e06e2c4881cec3203de9b06,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1050359893912244569}
+    - targetCorrespondingSourceObject: {fileID: 3505836200522129114, guid: a9659b5b2e06e2c4881cec3203de9b06,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6070943154742092584}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a9659b5b2e06e2c4881cec3203de9b06, type: 3}
+--- !u!4 &4428919595972182067 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7804451097117444241, guid: a9659b5b2e06e2c4881cec3203de9b06,
+    type: 3}
+  m_PrefabInstance: {fileID: 5852520093906864290}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7034463701662176888 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3505836200522129114, guid: a9659b5b2e06e2c4881cec3203de9b06,
+    type: 3}
+  m_PrefabInstance: {fileID: 5852520093906864290}
+  m_PrefabAsset: {fileID: 0}

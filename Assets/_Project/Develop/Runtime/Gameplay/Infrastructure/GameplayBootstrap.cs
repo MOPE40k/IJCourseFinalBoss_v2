@@ -4,8 +4,8 @@ using Assets._Project.Develop.Runtime.Gameplay.Features.MainHero;
 using Assets._Project.Develop.Runtime.Gameplay.States;
 using Assets._Project.Develop.Runtime.Infrastructure;
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
-using Assets._Project.Develop.Runtime.Meta.Features.Sessions;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
+using Assets._Project.Develop.Runtime.UI.Gameplay;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagment;
 using System;
 using System.Collections;
@@ -23,6 +23,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
         private GameplayStatesContext _gameplayStatesContext;
         private EntitiesLifeContext _entitiesLifeContext;
         private AIBrainsContext _brainsContext;
+
+        private GameplayScreenPresenter _gameplayScreenPresenter = null;
 
         public override void ProcessRegistrations(DIContainer container, IInputSceneArgs sceneArgs = null)
         {
@@ -49,6 +51,8 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 
             _gameplayStatesContext = _container.Resolve<GameplayStatesContext>();
 
+            _gameplayScreenPresenter = _container.Resolve<GameplayScreenPresenter>();
+
             _container.Resolve<MainHeroFactory>().Create(Vector3.zero);
 
             yield break;
@@ -72,5 +76,10 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Infrastructure
 
         private void FixedUpdate()
             => _entitiesLifeContext?.FixedUpdate(Time.fixedDeltaTime);
+
+        private void LateUpdate()
+        {
+            _gameplayScreenPresenter?.LateUpdateTick();
+        }
     }
 }

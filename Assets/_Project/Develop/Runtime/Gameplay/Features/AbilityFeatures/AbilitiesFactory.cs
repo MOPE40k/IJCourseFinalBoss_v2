@@ -2,11 +2,13 @@ using System;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore;
 using Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Attack.AreaAttack;
+using Assets._Project.Develop.Runtime.Gameplay.Features.LifeCycle;
 using Assets._Project.Develop.Runtime.Gameplay.Features.Sensors;
 using Assets._Project.Develop.Runtime.Gameplay.Features.TeamsFeature;
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.Utilities.Reactive;
+using CourseGameVideo.Assets._Project.Develop.Runtime.Gameplay.Features.ContactTakeDamage;
 using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Gameplay.Features.AbilityFeatures
@@ -23,7 +25,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AbilityFeatures
         private readonly MonoEntitiesFactory _monoEntitiesFactory = null;
         private readonly CollidersRegistryService _collidersRegistryService = null;
         private readonly EntitiesLifeContext _entitiesLifeContext = null;
-        private readonly WalletService _walletService = null;
 
         public AbilitiesFactory(DIContainer container)
         {
@@ -33,7 +34,6 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AbilityFeatures
             _monoEntitiesFactory = _container.Resolve<MonoEntitiesFactory>();
             _collidersRegistryService = _container.Resolve<CollidersRegistryService>();
             _entitiesLifeContext = _container.Resolve<EntitiesLifeContext>();
-            _walletService = _container.Resolve<WalletService>();
         }
 
         public Entity UseAbility(Entity owner)
@@ -61,9 +61,10 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AbilityFeatures
                 .AddTeam(new ReactiveVariable<Teams>(team.Value));
 
             entity
-                .AddSystem(new AreaContactsDetectingSystem())
-                .AddSystem(new AreaContactsEntitiesFilterSystem(_collidersRegistryService))
-                .AddSystem(new AreaDealDamageOnContactAndSelfReleaseSystem());
+                .AddSystem(new DealDamageUponDeadSystem())
+                .AddSystem(new InstantAreaContactsDetectingSystem())
+                .AddSystem(new InstantAreaContactsEntitiesFilterSystem(_collidersRegistryService))
+                .AddSystem(new InstantDeathSystem());
 
             _entitiesLifeContext.Add(entity);
 
@@ -72,7 +73,7 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AbilityFeatures
 
         public Entity CreateMine(Entity owner)
         {
-            Entity entity = CreateAreaDamageEntity();
+            Entity entity = _entitiesFactory.CreateAreaDamageEntity(); ;
 
             IReadOnlyVariable<Vector3> position = owner.MousePositionOnPlane;
             IReadOnlyVariable<float> radius = owner.RadiusAreaAttack;
@@ -82,19 +83,19 @@ namespace Assets._Project.Develop.Runtime.Gameplay.Features.AbilityFeatures
             _monoEntitiesFactory.Create(entity, position.Value, MinePrefabPath);
 
             entity
-                .AddBodyContactDamage(new ReactiveVariable<float>(damage.Value))
+                .AddRadiusAreaAttack(new ReactiveVariable<float>(radius.Value))
+                .AddDamageAreaAttack(new ReactiveVariable<float>(damage.Value))
                 .AddTeam(new ReactiveVariable<Teams>(team.Value));
 
             entity
-                .AddSystem(new BodyContactsDetectingSystem(radius.Value))
-                .AddSystem(new BodyContactsEntitiesFilterSystem(_collidersRegistryService));
+                .AddSystem(new DealDamageUponDeadSystem())
+                .AddSystem(new AreaBodyContactsDetectingSystem())
+                .AddSystem(new BodyContactsEntitiesFilterSystem(_collidersRegistryService))
+                .AddSystem(new AnotherTeamTouchDetectorSystem());
 
             _entitiesLifeContext.Add(entity);
 
             return entity;
         }
-
-        private Entity CreateAreaDamageEntity()
-            => _entitiesFactory.CreateAreaDamageEntity();
     }
 }

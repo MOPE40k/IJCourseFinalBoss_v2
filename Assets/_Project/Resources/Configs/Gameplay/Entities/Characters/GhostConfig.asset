@@ -12,11 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 130b47361c96fe34f8b1ee12680200c6, type: 3}
   m_Name: GhostConfig
   m_EditorClassIdentifier: 
-  <PrefabPath>k__BackingField: Entities/Ghost
-  <MoveSpeed>k__BackingField: 1
-  <RotationSpeed>k__BackingField: 900
-  <MaxHealth>k__BackingField: 30
-  <BodyContactDamage>k__BackingField: 50
-  <DamageAreaAttack>k__BackingField: 15
-  <RadiusAreaAttack>k__BackingField: 5
-  <DeathProcessTime>k__BackingField: 0.01
+  _prefabPath: Entities/Ghost
+  _moveSpeed: 0.3
+  _rotationSpeed: 900
+  _attackProcessTime: 1
+  _attackDelayTime: 0.5
+  _attackCooldown: 0.5
+  _bodyContactDamage: 50
+  _damageAreaAttack: 50
+  _radiusAreaAttack: 5
+  _maxHealth: 30
+  _deathProcessTime: 2
+  _spawnProcessTime: 0.41666

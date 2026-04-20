@@ -19,22 +19,65 @@ namespace Assets._Project.Develop.Runtime.Gameplay.EntitiesCore.Mono
         {
             _linkedEntity = entity;
 
+            MonoComponentsRegister(entity);
+
+            ViewsLink(entity);
+
+            CollidersRegister(entity);
+        }
+
+        public void Cleanup(Entity entity)
+        {
+            ViewsCleanup(entity);
+
+            CollidersUnregister(entity);
+
+            _linkedEntity = null;
+        }
+
+        private void MonoComponentsRegister(Entity entity)
+        {
             MonoEntityRegistrator[] registrators = GetComponentsInChildren<MonoEntityRegistrator>();
 
             if (registrators != null)
                 foreach (MonoEntityRegistrator registrator in registrators)
                     registrator.Register(entity);
-
-            foreach (Collider collider in GetComponentsInChildren<Collider>())
-                _collidersRegistryService.Register(collider, entity);
         }
 
-        public void Cleanup(Entity entity)
+        private void ViewsLink(Entity entity)
         {
-            foreach (Collider collider in GetComponentsInChildren<Collider>())
-                _collidersRegistryService.Unregister(collider);
+            EntityView[] views = GetComponentsInChildren<EntityView>();
 
-            _linkedEntity = null;
+            if (views != null)
+                foreach (EntityView view in views)
+                    view.Link(entity);
+        }
+
+        private void ViewsCleanup(Entity entity)
+        {
+            EntityView[] views = GetComponentsInChildren<EntityView>();
+
+            if (views != null)
+                foreach (EntityView view in views)
+                    view.Cleanup(entity);
+        }
+
+        private void CollidersRegister(Entity entity)
+        {
+            Collider[] colliders = GetComponentsInChildren<Collider>();
+
+            if (colliders != null)
+                foreach (Collider collider in colliders)
+                    _collidersRegistryService.Register(collider, entity);
+        }
+
+        private void CollidersUnregister(Entity entity)
+        {
+            Collider[] colliders = GetComponentsInChildren<Collider>();
+
+            if (colliders != null)
+                foreach (Collider collider in colliders)
+                    _collidersRegistryService.Unregister(collider);
         }
     }
 }

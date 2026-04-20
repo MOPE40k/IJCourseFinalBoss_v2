@@ -5,6 +5,7 @@ using Assets._Project.Develop.Runtime.Gameplay.Infrastructure;
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
 using Assets._Project.Develop.Runtime.Meta.Features.LevelsProgression;
 using Assets._Project.Develop.Runtime.Meta.Features.Sessions;
+using Assets._Project.Develop.Runtime.UI.Gameplay;
 using Assets._Project.Develop.Runtime.Utilities.Conditions;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using Assets._Project.Develop.Runtime.Utilities.CoroutinesManagment;
@@ -41,15 +42,17 @@ namespace Assets._Project.Develop.Runtime.Gameplay.States
                 _container.Resolve<PlayerDataProvider>(),
                 _container.Resolve<ICoroutinesPerformer>(),
                 _container.Resolve<SessionsResultsCounterService>(),
-                _container.Resolve<SceneSwitcherService>());
+                _container.Resolve<SceneSwitcherService>(),
+                _container.Resolve<GameplayPopupService>());
 
         public DefeatState CreateDefeatState()
             => new DefeatState(
-                _container.Resolve<SceneSwitcherService>(),
                 _container.Resolve<PlayerDataProvider>(),
                 _container.Resolve<ICoroutinesPerformer>(),
                 _container.Resolve<SessionsResultsCounterService>(),
-                _container.Resolve<IInputService>());
+                _container.Resolve<IInputService>(),
+                _container.Resolve<GameplayPopupService>());
+
 
         public GameplayStateMachine CreateGameplayStateMachine(GameplayInputArgs gameplayInputArgs)
         {
